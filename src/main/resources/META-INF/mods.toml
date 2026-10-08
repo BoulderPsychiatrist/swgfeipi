@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="MIT"
+
+[[mods]]
+modId="fasterblockplacement"
+version="1.0"
+displayName="Faster Block Placement"
+authors="germanbucket"
+description='''
+Removes the 4-tick right-click delay so blocks can be placed faster. Toggle with G.
+'''
+
+[[dependencies.fasterblockplacement]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.fasterblockplacement]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5]"
+    ordering="NONE"
+    side="BOTH"
