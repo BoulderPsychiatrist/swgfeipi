@@ -1,10 +1,10 @@
 package mod.germanbucket.fasterblockplacement;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.event.TickEvent;
@@ -19,16 +19,16 @@ import java.lang.reflect.Field;
 
 public class ClientEvents {
 
-    public static final KeyMapping TOGGLE_INSTAPLACE_BIND = new KeyMapping(
+    public static final KeyBinding TOGGLE_INSTAPLACE_BIND = new KeyBinding(
             "key." + FasterBlockPlacement.MODID + ".enableinstaplace",
             KeyConflictContext.IN_GAME,
-            InputConstants.getKey(GLFW.GLFW_KEY_G, -1),
+            InputMappings.getInputByCode(GLFW.GLFW_KEY_G, -1),
             "key.categories." + FasterBlockPlacement.MODID
     );
 
     private static int ticker = 20;
 
-    // Minecraft#rightClickDelay (SRG name field_71467_ac). Accessed via reflection instead of a mixin.
+    // Minecraft#rightClickDelayTimer (SRG name field_71467_ac). Accessed via reflection instead of a mixin.
     private static Field rightClickDelayField;
     private static boolean reflectionFailed = false;
 
@@ -43,7 +43,7 @@ public class ClientEvents {
             rightClickDelayField.setInt(mc, 0);
         } catch (Throwable t) {
             reflectionFailed = true;
-            FasterBlockPlacement.LOGGER.error("Could not access Minecraft#rightClickDelay, instant placement disabled", t);
+            FasterBlockPlacement.LOGGER.error("Could not access Minecraft#rightClickDelayTimer, instant placement disabled", t);
         }
     }
 
@@ -69,17 +69,17 @@ public class ClientEvents {
                 ticker--;
             }
 
-            if (TOGGLE_INSTAPLACE_BIND.isDown() && mc.player != null && ticker <= 0) {
+            if (TOGGLE_INSTAPLACE_BIND.isKeyDown() && mc.player != null && ticker <= 0) {
                 ticker = 20;
-                TOGGLE_INSTAPLACE_BIND.consumeClick();
+                TOGGLE_INSTAPLACE_BIND.isPressed();
 
                 if (Config.isInstantPlacing) {
-                    mc.player.displayClientMessage(new TranslatableComponent("message." + FasterBlockPlacement.MODID + ".disabledinstaplace"), true);
-                    mc.player.playSound(SoundEvents.NOTE_BLOCK_PLING, 1.0F, 1.0F);
+                    mc.player.sendStatusMessage(new TranslationTextComponent("message." + FasterBlockPlacement.MODID + ".disabledinstaplace"), true);
+                    mc.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
                     Config.isInstantPlacing = false;
                 } else {
-                    mc.player.displayClientMessage(new TranslatableComponent("message." + FasterBlockPlacement.MODID + ".enabledinstaplace"), true);
-                    mc.player.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.0F, 1.0F);
+                    mc.player.sendStatusMessage(new TranslationTextComponent("message." + FasterBlockPlacement.MODID + ".enabledinstaplace"), true);
+                    mc.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.0F, 1.0F);
                     Config.isInstantPlacing = true;
                 }
             }
