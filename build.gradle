@@ -19,7 +19,7 @@ archivesBaseName = 'fasterblockplacement'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
-    mappings channel: 'stable', version: '39-1.16.5'
+    mappings channel: 'snapshot', version: '20210309-1.16.5'
 
     runs {
         client {
